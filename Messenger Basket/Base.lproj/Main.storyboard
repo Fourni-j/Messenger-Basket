@@ -32,13 +32,6 @@
                                     <constraint firstAttribute="height" constant="56" id="NNv-Qb-eJ4"/>
                                 </constraints>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="basketball" translatesAutoresizingMaskIntoConstraints="NO" id="Okn-mr-RAC" customClass="Ball" customModule="Messenger_Basket" customModuleProvider="target">
-                                <rect key="frame" x="113" y="500" width="80" height="80"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="80" id="QVI-m2-MDF"/>
-                                    <constraint firstAttribute="height" constant="80" id="zp2-xa-de5"/>
-                                </constraints>
-                            </imageView>
                             <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="line" translatesAutoresizingMaskIntoConstraints="NO" id="PiN-If-hzB">
                                 <rect key="frame" x="252" y="267" width="97.5" height="6"/>
                                 <constraints>
@@ -50,18 +43,15 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="PiN-If-hzB" firstAttribute="top" secondItem="xh0-4C-IFr" secondAttribute="bottom" constant="-26.5" id="DBj-Lt-Vdw"/>
-                            <constraint firstItem="Okn-mr-RAC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-147" id="WtN-V5-9AG"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="eQp-9g-KXE" secondAttribute="bottom" id="aQj-Oa-5gu"/>
                             <constraint firstItem="eQp-9g-KXE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="auu-cU-UhF"/>
                             <constraint firstItem="xh0-4C-IFr" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="136" id="gdy-tt-aie"/>
                             <constraint firstItem="PiN-If-hzB" firstAttribute="leading" secondItem="xh0-4C-IFr" secondAttribute="trailing" constant="-154" id="hxE-EJ-Q88"/>
                             <constraint firstItem="xh0-4C-IFr" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qSQ-be-lz6"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Okn-mr-RAC" secondAttribute="bottom" constant="20" id="qls-nb-ty6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="eQp-9g-KXE" secondAttribute="trailing" constant="-20" id="xo8-dL-bbo"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="basketball" destination="Okn-mr-RAC" id="PFU-7H-Kcb"/>
                         <outlet property="panierLine" destination="PiN-If-hzB" id="DoB-Ww-LxA"/>
                     </connections>
                 </viewController>
@@ -72,7 +62,6 @@
     </scenes>
     <resources>
         <image name="Panier" width="422" height="275"/>
-        <image name="basketball" width="224" height="224"/>
         <image name="line" width="195" height="14"/>
     </resources>
 </document>
