@@ -30,6 +30,9 @@ class ViewController: UIViewController {
     var isCollide = false
     var gameEnded = false
     
+    var touchPointEnd: CGPoint!
+    var touchPointBegin: CGPoint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -39,6 +42,20 @@ class ViewController: UIViewController {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+
+        if let touch = touches.first {
+            let location = touch.locationInView(view)
+            touchPointBegin = location
+        }
+        super.touchesBegan(touches, withEvent: event)
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if let touch = touches.first {
+            let location = touch.locationInView(view)
+            touchPointEnd = location
+        }
+        super.touchesEnded(touches, withEvent: event)
         shoot()
     }
     
@@ -51,7 +68,7 @@ class ViewController: UIViewController {
         animator = UIDynamicAnimator(referenceView: view)
         
         gravity = UIGravityBehavior(items: [progBasketball])
-
+        
         elasticity = UIDynamicItemBehavior(items: [progBasketball])
         elasticity.elasticity = 0.7
         
@@ -120,7 +137,10 @@ class ViewController: UIViewController {
             }
             self.lastBasketballY = self.progBasketball.frame.origin.y
         }
-        push.angle = -1.42
+        
+        let f = atan2(self.touchPointEnd.y - self.touchPointBegin.y, self.touchPointEnd.x - self.touchPointBegin.x)
+  
+        push.angle = f
         push.magnitude = 5
         return push
     }
