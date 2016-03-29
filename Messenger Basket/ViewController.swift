@@ -16,90 +16,110 @@ class Ball : UIImageView {
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var basketball: Ball!
     @IBOutlet weak var panierLine: UIImageView!
+    
+    var progBasketball: Ball!
     
     var gravity: UIGravityBehavior!
     var animator: UIDynamicAnimator!
     var collision: UICollisionBehavior!
     var elasticity: UIDynamicItemBehavior!
+    var push: UIPushBehavior!
     
     var lastBasketballY: CGFloat!
     var isCollide = false
+    var gameEnded = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lastBasketballY = 0
-        
-        animator = UIDynamicAnimator(referenceView: view)
-        gravity = UIGravityBehavior(items: [basketball])
-        elasticity = UIDynamicItemBehavior(items: [basketball])
-        
-        elasticity.elasticity = 0.7
-        
-        collision = UICollisionBehavior(items: [basketball])
-        collision.translatesReferenceBoundsIntoBoundary = true
-        
-        collision.addBoundaryWithIdentifier("leftPanier", fromPoint: CGPointMake(135, 268), toPoint: CGPointMake(140, 268))
-        collision.addBoundaryWithIdentifier("rightPanier", fromPoint: CGPointMake(231, 268), toPoint: CGPointMake(237, 268))
-        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        spawnBall()
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         shoot()
+    }
+    
+    func createDynamicProperties() {
+        if animator != nil {
+            animator.removeAllBehaviors()
+            animator = nil
+        }
+        
+        animator = UIDynamicAnimator(referenceView: view)
+        
+        gravity = UIGravityBehavior(items: [progBasketball])
+
+        elasticity = UIDynamicItemBehavior(items: [progBasketball])
+        elasticity.elasticity = 0.7
+        
+        collision = UICollisionBehavior(items: [progBasketball])
+        collision.translatesReferenceBoundsIntoBoundary = true
+        collision.addBoundaryWithIdentifier("leftPanier", fromPoint: CGPointMake(135, 268), toPoint: CGPointMake(140, 268))
+        collision.addBoundaryWithIdentifier("rightPanier", fromPoint: CGPointMake(231, 268), toPoint: CGPointMake(237, 268))
+    }
+    
+    func spawnBall() {
+        if progBasketball != nil {
+            progBasketball.removeFromSuperview()
+            progBasketball = nil
+        }
+        
+        progBasketball = Ball(image: UIImage(named: "basketball"))
+        let newFrame = CGRectMake(7.5, 567.0, 80.0, 80.0)
+        progBasketball.frame = newFrame
+        view.addSubview(progBasketball)
+        
+        createDynamicProperties()
+        resetGameProperties()
+    }
+    
+    func resetGameProperties() {
+        isCollide = false
+        gameEnded = false
+        lastBasketballY = 0
+    }
+    
+    func endGame() {
+        UIView.animateWithDuration(0.3, animations: {
+            self.progBasketball.alpha = 0
+            }, completion: {
+                (value: Bool) in
+                self.spawnBall()
+        })
+    }
+    
+    func shoot() {
+        animator.addBehavior(pushForPosition(CGPointZero))
         animator.addBehavior(elasticity)
         animator.addBehavior(gravity)
     }
     
-    func endGame() {
-        UIView.animateWithDuration(1, animations: {
-            self.basketball.alpha = 0
-            }, completion: {
-                (value: Bool) in
-//                self.animator.removeAllBehaviors()
-//                self.basketball.hidden = false
-//                let newFrame = CGRectMake(113, 500, 80, 80)
-//                self.basketball.frame = newFrame
-                print("tatito")
-        })
-
-//        UIView.animateWithDuration(0.5, animations: {
-//            self.basketball.alpha = 0
-//        })
-        
-    }
-    
-    func shoot() {
-        animator?.addBehavior(pushForPosition(CGPointZero))
-    }
-    
     func pushForPosition(position: CGPoint) -> UIPushBehavior {
-        let push = UIPushBehavior(items: [basketball], mode: .Instantaneous)
-        
+        push = UIPushBehavior(items: [progBasketball], mode: .Instantaneous)
         push.action = {
-            
             if self.lastBasketballY == 0 {
-                self.lastBasketballY = self.basketball.frame.origin.y + 1
+                self.lastBasketballY = self.progBasketball.frame.origin.y + 1
             }
-            
-            if self.lastBasketballY == self.basketball.frame.origin.y {
+            if self.lastBasketballY == self.progBasketball.frame.origin.y {
                 if !self.isCollide {
                     self.animator.addBehavior(self.collision)
                     self.panierLine.hidden = false;
                     self.isCollide = true
                 }
             }
-            
-            if self.basketball.frame.origin.y > 250 {
+            if self.progBasketball.frame.origin.y > 250 {
                 if self.isCollide {
-                    self.endGame()
+                    if !self.gameEnded {
+                        self.gameEnded = true
+                        self.endGame()
+                    }
                 }
             }
-            
-            self.lastBasketballY = self.basketball.frame.origin.y
+            self.lastBasketballY = self.progBasketball.frame.origin.y
         }
-        
         push.angle = -1.42
         push.magnitude = 5
         return push
