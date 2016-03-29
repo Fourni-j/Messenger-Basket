@@ -6,3 +6,13 @@ Clone of the messenger basket mini game on iOS
 
 
 I will do a proper readme in the next few days
+
+
+
+# Work to do 
+
+• Scoring<br/>
+• Despawn / spawn ball<br/>
+• Push angle
+
+
