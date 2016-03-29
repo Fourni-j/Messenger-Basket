@@ -85,7 +85,16 @@ class ViewController: UIViewController {
         }
         
         progBasketball = Ball(image: UIImage(named: "basketball"))
-        let newFrame = CGRectMake(7.5, 567.0, 80.0, 80.0)
+        
+        let randMax: Int = Int(self.view.frame.size.width - 80)
+        
+        let xPosition = random() % randMax
+
+        let xPositionFloat : CGFloat = CGFloat(xPosition)
+        
+        print("Random position : \(xPosition)")
+        
+        let newFrame = CGRectMake(xPositionFloat, 567.0, 80.0, 80.0)
         progBasketball.frame = newFrame
         view.addSubview(progBasketball)
         
