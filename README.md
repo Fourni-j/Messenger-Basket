@@ -10,7 +10,7 @@ Clone of the messenger basket mini game on iOS
 
 ## Screenshots
 
-<> ![Example](./Screens/example.gif "Example View")
+![Example](./Screens/example.gif "Example View")
 
 # Work to do 
 
