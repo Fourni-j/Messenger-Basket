@@ -33,6 +33,9 @@ class ViewController: UIViewController {
     var touchPointEnd: CGPoint!
     var touchPointBegin: CGPoint!
     
+    var bestScore: Int!
+    var actualScore: Int!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -42,7 +45,7 @@ class ViewController: UIViewController {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-
+        
         if let touch = touches.first {
             let location = touch.locationInView(view)
             touchPointBegin = location
@@ -89,7 +92,7 @@ class ViewController: UIViewController {
         let randMax: Int = Int(self.view.frame.size.width - 80)
         
         let xPosition = random() % randMax
-
+        
         let xPositionFloat : CGFloat = CGFloat(xPosition)
         
         print("Random position : \(xPosition)")
@@ -103,6 +106,8 @@ class ViewController: UIViewController {
     }
     
     func resetGameProperties() {
+        bestScore = actualScore
+        actualScore = 0
         isCollide = false
         gameEnded = false
         lastBasketballY = 0
@@ -126,6 +131,7 @@ class ViewController: UIViewController {
     func pushForPosition(position: CGPoint) -> UIPushBehavior {
         push = UIPushBehavior(items: [progBasketball], mode: .Instantaneous)
         push.action = {
+            
             if self.lastBasketballY == 0 {
                 self.lastBasketballY = self.progBasketball.frame.origin.y + 1
             }
@@ -148,7 +154,7 @@ class ViewController: UIViewController {
         }
         
         let f = atan2(self.touchPointEnd.y - self.touchPointBegin.y, self.touchPointEnd.x - self.touchPointBegin.x)
-  
+        
         push.angle = f
         push.magnitude = 5
         return push
