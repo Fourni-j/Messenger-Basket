@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var basket: UIImageView!
     
     var progBasketball: Ball!
-    var progPanierLine: UIImageView!
+    var progBasketLine: UIImageView!
     
     var gravity: UIGravityBehavior!
     var animator: UIDynamicAnimator!
@@ -31,6 +31,7 @@ class ViewController: UIViewController {
     var lastBasketballY: CGFloat!
     var isCollide = false
     var gameEnded = false
+    var isShoot = false
     
     var touchPointEnd: CGPoint!
     var touchPointBegin: CGPoint!
@@ -87,20 +88,20 @@ class ViewController: UIViewController {
     }
     
     func spawnPanierLine() {
-        if progPanierLine != nil {
-            progPanierLine.removeFromSuperview()
-            progPanierLine = nil
+        if progBasketLine != nil {
+            progBasketLine.removeFromSuperview()
+            progBasketLine = nil
         }
         
-        progPanierLine = UIImageView(image: UIImage(named: "line"))
+        progBasketLine = UIImageView(image: UIImage(named: "line"))
         
         let xPosition = basket.frame.origin.x + basket.frame.width - 154
         let yPosition = basket.frame.origin.y + basket.frame.height - 26.5
         
         let newFrame = CGRectMake(xPosition, yPosition, 97.5, 6)
         
-        progPanierLine.frame = newFrame
-        view.addSubview(progPanierLine)
+        progBasketLine.frame = newFrame
+        view.addSubview(progBasketLine)
     }
     
     func spawnBall() {
@@ -132,6 +133,7 @@ class ViewController: UIViewController {
         actualScore = 0
         isCollide = false
         gameEnded = false
+        isShoot = false
         lastBasketballY = 0
     }
     
@@ -145,10 +147,13 @@ class ViewController: UIViewController {
     }
     
     func shoot() {
-        animator.addBehavior(collision)
-        animator.addBehavior(pushForPosition(CGPointZero))
-        animator.addBehavior(elasticity)
-        animator.addBehavior(gravity)
+        if !isShoot {
+            animator.addBehavior(collision)
+            animator.addBehavior(pushForPosition(CGPointZero))
+            animator.addBehavior(elasticity)
+            animator.addBehavior(gravity)
+            isShoot = true
+        }
     }
     
     func pushForPosition(position: CGPoint) -> UIPushBehavior {
@@ -158,7 +163,7 @@ class ViewController: UIViewController {
             if self.lastBasketballY == 0 {
                 self.lastBasketballY = self.progBasketball.frame.origin.y + 1
             }
-            if self.lastBasketballY == self.progBasketball.frame.origin.y {
+            if self.lastBasketballY <= self.progBasketball.frame.origin.y {
                 if !self.isCollide {
                     self.animator.addBehavior(self.basketCollision)
                     self.spawnPanierLine()
@@ -176,10 +181,16 @@ class ViewController: UIViewController {
             self.lastBasketballY = self.progBasketball.frame.origin.y
         }
         
-        let f = atan2(self.touchPointEnd.y - self.touchPointBegin.y, self.touchPointEnd.x - self.touchPointBegin.x)
+        var f = atan2(self.touchPointEnd.y - self.touchPointBegin.y, self.touchPointEnd.x - self.touchPointBegin.x)
+        
+        if f > -1.40 {
+            f = -1.40
+        } else if f < -1.70 {
+            f = -1.75
+        }
         
         push.angle = f
-        push.magnitude = 5
+        push.magnitude = 5.25
         return push
     }
     
