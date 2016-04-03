@@ -16,13 +16,15 @@ class Ball : UIImageView {
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var panierLine: UIImageView!
+    @IBOutlet weak var basket: UIImageView!
     
     var progBasketball: Ball!
+    var progPanierLine: UIImageView!
     
     var gravity: UIGravityBehavior!
     var animator: UIDynamicAnimator!
     var collision: UICollisionBehavior!
+    var basketCollision: UICollisionBehavior!
     var elasticity: UIDynamicItemBehavior!
     var push: UIPushBehavior!
     
@@ -77,8 +79,28 @@ class ViewController: UIViewController {
         
         collision = UICollisionBehavior(items: [progBasketball])
         collision.translatesReferenceBoundsIntoBoundary = true
-        collision.addBoundaryWithIdentifier("leftPanier", fromPoint: CGPointMake(135, 268), toPoint: CGPointMake(140, 268))
-        collision.addBoundaryWithIdentifier("rightPanier", fromPoint: CGPointMake(231, 268), toPoint: CGPointMake(237, 268))
+        
+        basketCollision = UICollisionBehavior(items: [progBasketball])
+        basketCollision.translatesReferenceBoundsIntoBoundary = true
+        basketCollision.addBoundaryWithIdentifier("leftPanier", fromPoint: CGPointMake(135, 268), toPoint: CGPointMake(140, 268))
+        basketCollision.addBoundaryWithIdentifier("rightPanier", fromPoint: CGPointMake(231, 268), toPoint: CGPointMake(237, 268))
+    }
+    
+    func spawnPanierLine() {
+        if progPanierLine != nil {
+            progPanierLine.removeFromSuperview()
+            progPanierLine = nil
+        }
+        
+        progPanierLine = UIImageView(image: UIImage(named: "line"))
+        
+        let xPosition = basket.frame.origin.x + basket.frame.width - 154
+        let yPosition = basket.frame.origin.y + basket.frame.height - 26.5
+        
+        let newFrame = CGRectMake(xPosition, yPosition, 97.5, 6)
+        
+        progPanierLine.frame = newFrame
+        view.addSubview(progPanierLine)
     }
     
     func spawnBall() {
@@ -123,6 +145,7 @@ class ViewController: UIViewController {
     }
     
     func shoot() {
+        animator.addBehavior(collision)
         animator.addBehavior(pushForPosition(CGPointZero))
         animator.addBehavior(elasticity)
         animator.addBehavior(gravity)
@@ -137,8 +160,8 @@ class ViewController: UIViewController {
             }
             if self.lastBasketballY == self.progBasketball.frame.origin.y {
                 if !self.isCollide {
-                    self.animator.addBehavior(self.collision)
-                    self.panierLine.hidden = false;
+                    self.animator.addBehavior(self.basketCollision)
+                    self.spawnPanierLine()
                     self.isCollide = true
                 }
             }

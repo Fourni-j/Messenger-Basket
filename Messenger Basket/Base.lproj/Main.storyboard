@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15E33e" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -32,27 +32,18 @@
                                     <constraint firstAttribute="height" constant="56" id="NNv-Qb-eJ4"/>
                                 </constraints>
                             </view>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="line" translatesAutoresizingMaskIntoConstraints="NO" id="PiN-If-hzB">
-                                <rect key="frame" x="252" y="267" width="97.5" height="6"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="97.5" id="dAT-zi-amx"/>
-                                    <constraint firstAttribute="height" constant="6" id="yJM-z5-QhH"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="PiN-If-hzB" firstAttribute="top" secondItem="xh0-4C-IFr" secondAttribute="bottom" constant="-26.5" id="DBj-Lt-Vdw"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="eQp-9g-KXE" secondAttribute="bottom" id="aQj-Oa-5gu"/>
                             <constraint firstItem="eQp-9g-KXE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="auu-cU-UhF"/>
                             <constraint firstItem="xh0-4C-IFr" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="136" id="gdy-tt-aie"/>
-                            <constraint firstItem="PiN-If-hzB" firstAttribute="leading" secondItem="xh0-4C-IFr" secondAttribute="trailing" constant="-154" id="hxE-EJ-Q88"/>
                             <constraint firstItem="xh0-4C-IFr" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qSQ-be-lz6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="eQp-9g-KXE" secondAttribute="trailing" constant="-20" id="xo8-dL-bbo"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="panierLine" destination="PiN-If-hzB" id="DoB-Ww-LxA"/>
+                        <outlet property="basket" destination="xh0-4C-IFr" id="Cr8-yd-Bgm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -62,6 +53,5 @@
     </scenes>
     <resources>
         <image name="Panier" width="422" height="275"/>
-        <image name="line" width="195" height="14"/>
     </resources>
 </document>
