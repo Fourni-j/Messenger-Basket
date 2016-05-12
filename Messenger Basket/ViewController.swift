@@ -17,6 +17,9 @@ class Ball : UIImageView {
 class ViewController: UIViewController {
     
     @IBOutlet weak var basket: UIImageView!
+    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var bestScoreLabel: UILabel!
+    @IBOutlet weak var emoteLabel: UILabel!
     
     var progBasketball: Ball!
     var progBasketLine: UIImageView!
@@ -32,23 +35,29 @@ class ViewController: UIViewController {
     var isCollide = false
     var gameEnded = false
     var isShoot = false
+    var isInsideBasket = false;
     
     var touchPointEnd: CGPoint!
     var touchPointBegin: CGPoint!
     
-    var bestScore: Int!
-    var actualScore: Int!
+    var bestScore: Int = 0
+    var actualScore: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.emoteLabel.hidden = true;
     }
     
     override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        let defaults = NSUserDefaults.standardUserDefaults()
+        bestScore = defaults.integerForKey("basketBestScore")
+        updateScore()
+        updateHighScore()
         spawnBall()
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        
         if let touch = touches.first {
             let location = touch.locationInView(view)
             touchPointBegin = location
@@ -63,6 +72,24 @@ class ViewController: UIViewController {
         }
         super.touchesEnded(touches, withEvent: event)
         shoot()
+    }
+    
+    func animateLabel() {
+        
+        if actualScore != 1 {
+            
+            UIView.animateWithDuration(0.2, animations: {
+                self.scoreLabel.transform = CGAffineTransformScale(self.scoreLabel.transform, 0.2, 0.2)
+            }) { (Bool) in
+                self.scoreLabel.text = "\(self.actualScore)"
+                UIView.animateWithDuration(0.2) {
+                    self.scoreLabel.transform = CGAffineTransformScale(self.scoreLabel.transform, 5, 5)
+                }
+            }
+        }
+        else {
+            self.scoreLabel.text = "\(self.actualScore)"
+        }
     }
     
     func createDynamicProperties() {
@@ -83,8 +110,8 @@ class ViewController: UIViewController {
         
         basketCollision = UICollisionBehavior(items: [progBasketball])
         basketCollision.translatesReferenceBoundsIntoBoundary = true
-        basketCollision.addBoundaryWithIdentifier("leftPanier", fromPoint: CGPointMake(135, 268), toPoint: CGPointMake(140, 268))
-        basketCollision.addBoundaryWithIdentifier("rightPanier", fromPoint: CGPointMake(231, 268), toPoint: CGPointMake(237, 268))
+        basketCollision.addBoundaryWithIdentifier("leftPanier", fromPoint: CGPointMake(135, 268), toPoint: CGPointMake(136, 268))
+        basketCollision.addBoundaryWithIdentifier("rightPanier", fromPoint: CGPointMake(231, 268), toPoint: CGPointMake(232, 268))
     }
     
     func spawnPanierLine() {
@@ -97,7 +124,6 @@ class ViewController: UIViewController {
         
         let xPosition = basket.frame.origin.x + basket.frame.width - 154
         let yPosition = basket.frame.origin.y + basket.frame.height - 26.5
-        
         let newFrame = CGRectMake(xPosition, yPosition, 97.5, 6)
         
         progBasketLine.frame = newFrame
@@ -110,17 +136,12 @@ class ViewController: UIViewController {
             progBasketball = nil
         }
         
-        progBasketball = Ball(image: UIImage(named: "basketball"))
-        
         let randMax: Int = Int(self.view.frame.size.width - 80)
-        
         let xPosition = random() % randMax
-        
         let xPositionFloat : CGFloat = CGFloat(xPosition)
-        
-        print("Random position : \(xPosition)")
-        
         let newFrame = CGRectMake(xPositionFloat, 567.0, 80.0, 80.0)
+        
+        progBasketball = Ball(image: UIImage(named: "basketball"))
         progBasketball.frame = newFrame
         view.addSubview(progBasketball)
         
@@ -129,11 +150,10 @@ class ViewController: UIViewController {
     }
     
     func resetGameProperties() {
-        bestScore = actualScore
-        actualScore = 0
         isCollide = false
         gameEnded = false
         isShoot = false
+        isInsideBasket = false
         lastBasketballY = 0
     }
     
@@ -156,6 +176,43 @@ class ViewController: UIViewController {
         }
     }
     
+    func updateScore() {
+        
+        if self.isInsideBasket {
+            actualScore = actualScore + 1
+        } else {
+            updateHighScore()
+            actualScore = 0
+        }
+        animateLabel()
+        if actualScore == 0 {
+            self.scoreLabel.hidden = true
+        } else {
+            self.scoreLabel.hidden = false
+        }
+    }
+    
+    func displayEmote() {
+        self.emoteLabel.hidden = false
+        self.emoteLabel.text = "🙌"
+        UIView.animateWithDuration(1, animations: {
+            self.emoteLabel.frame.origin.y = self.emoteLabel.frame.origin.y - 20
+        }) { (Bool) in
+            self.emoteLabel.hidden = true
+        }
+    }
+    
+    func updateHighScore() {
+        if bestScore < actualScore {
+            bestScore = actualScore
+            
+            let defaults = NSUserDefaults.standardUserDefaults()
+            defaults.setInteger(bestScore, forKey: "basketBestScore")
+            print("save best score")
+        }
+        self.bestScoreLabel.text = "High Score : \(bestScore)"
+    }
+    
     func pushForPosition(position: CGPoint) -> UIPushBehavior {
         push = UIPushBehavior(items: [progBasketball], mode: .Instantaneous)
         push.action = {
@@ -168,15 +225,27 @@ class ViewController: UIViewController {
                     self.animator.addBehavior(self.basketCollision)
                     self.spawnPanierLine()
                     self.isCollide = true
+                    
                 }
             }
             if self.progBasketball.frame.origin.y > 250 {
                 if self.isCollide {
                     if !self.gameEnded {
                         self.gameEnded = true
+                        self.updateScore()
                         self.endGame()
                     }
                 }
+            }
+            
+            if self.isCollide  && !self.isInsideBasket {
+                if self.progBasketball.center.x > 169 && self.progBasketball.center.x < 196 {
+                    if self.progBasketball.center.y > 270 && self.progBasketball.center.y < 280 {
+                        self.isInsideBasket = true
+                        self.displayEmote()
+                    }
+                }
+                
             }
             self.lastBasketballY = self.progBasketball.frame.origin.y
         }
@@ -190,7 +259,7 @@ class ViewController: UIViewController {
         }
         
         push.angle = f
-        push.magnitude = 5.25
+        push.magnitude = 5.50
         return push
     }
     
